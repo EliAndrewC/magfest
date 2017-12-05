@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% if not XHR %}{% extends 'base.html' %}{% endif -%}
 {% set admin_area=True %}
-{% block title %}Badge Change{% endblock %}
+{% import 'macros.html' as macros with context %} {{ macros.title('Badge Change') }}
 {% block content %}
 
-<script type="text/javascript">
+<script>
     function badgeTypeChanged() {
         {% if not c.AT_THE_CON %}
             var badge_type = parseInt($("[name=badge_type]").val());

@@ -1,5 +1,5 @@
-{% extends "base.html" %}{% set admin_area=True %}
-{% block title %}Staffing Shifts - {{ attendee.full_name }}{% endblock %}
+{% if not XHR %}{% extends 'base.html' %}{% set admin_area=True %}{% endif -%}
+{% import 'macros.html' as macros with context %} {{ macros.title('Staffing Shifts - {{ attendee.full_name }}') }}
 {% block content %}
 
 <style type="text/css">
@@ -13,8 +13,8 @@
   }
 </style>
 
-<script type="text/javascript" src="../static_views/ratings.js"></script>
-<script type="text/javascript">
+<script src="../static_views/ratings.js"></script>
+<script>
     var SHIFTS = {{ shifts|jsonize }};
     $(function() {
         setupShiftRatingClickHandler();

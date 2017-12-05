@@ -1,12 +1,12 @@
-{% extends "base.html" %}{% set admin_area=True %}
-{% block title %}Pay For Your At-the-Door Registration{% endblock %}
+{% if not XHR %}{% extends 'base.html' %}{% set admin_area=True %}{% endif -%}
+{% import 'macros.html' as macros with context %} {{ macros.title('Pay For Your At-the-Door Registration') }}
 {% block backlink %}{% endblock %}
 {% block content %}
 
-<script type="text/javascript">
+<script>
     DISABLE_STRIPE_BUTTONS_ON_CLICK = false;
 </script>
-<script src="../static/js/servertimecheck.js" type="text/javascript"></script>
+<script src="../static/js/servertimecheck.js"></script>
 
 <h2>Payment for {{ attendee.full_name }}</h2>
 

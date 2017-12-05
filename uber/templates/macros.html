@@ -1,17 +1,10 @@
-{% macro ie7_compatibility_check() -%}
-  <!--[if lte IE 7]>
-        <script>
-            if (!document.documentMode) { //if documentMode exists, this is a later IE in compatibility mode
-                alert("This website requires IE 8 or later.");
-            }
-        </script>
-    <![endif]-->
+{% macro title(title) -%}
+<script>document.title='{{title}}'</script>
 {%- endmacro %}
-
 
 {% macro stripe_button(label) -%}
   <button class="btn btn-primary stripe-button-el">
-    <span class="display: block; min-height: 30px;">{{label}}</span>
+    <span c}}lass="display: block; min-height: 30px;">{{label}}</span>
   </button>
 {%- endmacro %}
 
@@ -347,7 +340,7 @@
   {%- set region_attr = model_prefix ~ 'region' -%}
   {%- set country_attr = model_prefix ~ 'country' -%}
 
-  <script type="text/javascript">
+  <script>
       var regionChange{{ suffix }} = function() {
           {% if update_international %}setInternational();{% endif %}
           var regionopts = $('#region{{ suffix }}');
@@ -423,7 +416,7 @@
 
 
 {% macro toggle_checkbox(selector, label, suffix='', name='', value='1', required_selector=False, hide_on_checked=True, mode='visibility', checked=False) -%}
-  <script type="text/javascript">
+  <script>
       var toggleVisibility{{ suffix }} = function () {
           var isChecked = $('#toggle_visibility{{ suffix }}').prop('checked'),
               hideOnChecked = {%- if hide_on_checked -%}true{%- else -%}false{%- endif -%},

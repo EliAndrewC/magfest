@@ -1,13 +1,20 @@
-{% import 'macros.html' as macros with context %}
 <!DOCTYPE HTML>
 <html>
 <head>
-    {{ macros.ie7_compatibility_check() }}
-    <title>{{ c.EVENT_NAME }} - {% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ c.EVENT_NAME }} - {% import 'macros.html' as macros with context %} {{ macros.title('') }}</title>
     <link rel="icon" href="../static/images/favicon.png" type="image/x-icon" />
 
+    <script src="../static/jspm_packages/system.js"></script>    
+    <script src="../static/config.js"></script>
+
     {% block head_styles %}
-        <link rel="stylesheet" href="../static/deps/combined.min.css" />
+        <script>
+            System.import('patternfly/dist/css/patternfly.css!');
+        </script>
+        <link rel="stylesheet" xhref="../static/styles/bootstrap.min.css" />
         <link rel="stylesheet" href="../static_views/styles/main.css" />
         {% if admin_area %}
             <link rel="stylesheet" type="text/css" href="../static_views/additional-styles.css" />
@@ -25,23 +32,19 @@
     {% block head_javascript %}
         <script>
             var message = '{{ message|e }}';
-        </script>
-
-        <script src="../static/deps/combined.min.js" type="text/javascript"></script>
-        <script src="../static/js/common-static.js" type="text/javascript"></script>
-        <script type="text/javascript">
             var csrf_token = '{{ c.CSRF_TOKEN }}';
         </script>
 
         {% if 'preregistration' not in c.PAGE_PATH %}
             {% for js in c.JAVASCRIPT_INCLUDES %}
-                <script src="{{ js }}" type="text/javascript"></script>
+                <script src="{{ js }}"></script>
             {% endfor %}
         {% endif %}
 
         {% if resend_email_form %}
-        <script type="text/javascript">
-            $(function() {
+        <script>
+            System.import('jquery').then(function($) {
+                $(function() {
                 $("form[action='resend_email']").each(function(index) {
                     $(this).submit(function (e) {
                         // Prevent form submit.
@@ -71,38 +74,16 @@
                     });
                 });
             });
+            });
         </script>
         {% endif %}
     {% endblock %}
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block sectionStyle %}{% endblock %}
 
     <style>
         .navbar {
             margin-bottom: 0px;
-        }
-        .loader_link {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60%;
-            height: 25%;
-            z-index: 9999;
-            background: rgb(249,249,249) url('../static/images/loading.gif') no-repeat center center;
-            background-size: 50%;
-        }
-        .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9998;
-            background: rgb(249,249,249);
         }
 
         #toast-container {
@@ -134,12 +115,53 @@
                 params[temp[0]] = temp[1];
             }
             return params;
+                };
+
+    System.import('jquery').then(function($) {
+    Promise.all([
+        System.import('jquery-datetextentry'),
+        System.import('toastr'),
+        System.import('datatables'),
+        System.import('jqueryui'),
+        System.import('bootstrap')
+    ]).then(function(modules) {
+                toastr = modules[1];
+        var setVisible = function (selector, visible) {
+            $(selector)[visible ? 'show' : 'hide']();
+        }
+
+        $.field = function (field) {
+            var $field = $('[name=' + field + ']');
+            return $field.length ? $field : null;
         };
 
-        $(function() {
-            $(window).load(function() {
-                $(".loader").fadeOut("fast");
+        $.val = function (field) {
+            var val = $.field(field).val();
+            if ($.field(field).is(':radio')) {
+                val = $.field(field).filter(':checked').val();
+            }
+            return val.match(/^\W*\d+\W*$/) ? parseInt(val) : val;
+        };
+
+        $.focus = function (field) {
+            $.field(field).focus();
+        };
+
+        $(document).ready(function() {
+            $(".dropdown-toggle").dropdown();
+        });
+
+        $(function () {
+            $('.datepicker').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '-100:+0',
+                defaultDate: '-20y',
+                dateFormat: 'yy-mm-dd'
             });
+        });
+
+
             toastr.options = {
                 closeButton: true,
                 debug: false,
@@ -173,8 +195,8 @@
                   } catch(ex) {
                     // Don't let any errors here disrupt the rest of the app!
                   }
-                }
-            };
+            }
+        }
             var message = '{{ message }}';
             if (message.length) {
                 toastr.info(message);
@@ -216,10 +238,6 @@
             });
             createDateTextEntries();
 
-            $('.geolocator').geocomplete({
-                details: '.address_details',
-                detailsAttribute: 'data-geo'
-            });
             $('.focus:first').focus();
             if (window.DISABLE_STRIPE_BUTTONS_ON_CLICK) {
                 // we can't intercept the Javascript form submit, so once someone has clicked the Stripe
@@ -232,7 +250,7 @@
             }
             // prevent people from paying after prereg closes
             {% if c.PRE_CON %}
-                if ($('form.stripe').size()) {
+                if ($('form.stripe').length) {
                     var prevHour = new Date().getHours();
                     var checkHour = function() {
                         var currHour = new Date().getHours();
@@ -247,13 +265,11 @@
                 }
             {% endif %}
         });
+      });
     </script>
     {% block head_additional %}{% endblock %}
 </head>
 <body>
-    {% if c.PRE_CON %}
-        <div class="loader"><a class="loader_link" href="../static_views/slow_load.html" target="_blank"></a></div>
-    {% endif %}
     {% block top_of_body_additional %}
         {% if admin_area %}
             <div id="floating_logo">
@@ -343,12 +359,6 @@
         <div id="bottomAnchor"></div>
     </div>
     {% block scripts %}
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
         {% include "baseextra.html" %}
     {% endblock %}
     {% block additional_scripts %}

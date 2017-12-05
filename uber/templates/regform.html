@@ -7,7 +7,7 @@
 {%- set is_after_request_hotel = c.AFTER_PREREG_REQUEST_HOTEL_INFO_DEADLINE -%}
 {%- set is_after_hotel_email = c.AFTER_PREREG_HOTEL_INFO_EMAIL_DATE -%}
 
-<script type="text/javascript">
+<script>
     var AGE_GROUPS = {{ c.AGE_GROUP_CONFIGS|jsonize }};
     var ageGroupSelected = function () {
         {% if not c.COLLECT_EXACT_BIRTHDATE %}
@@ -177,7 +177,7 @@
 
 {% if c.DONATIONS_ENABLED and c.PAGE_PATH != '/registration/form' %}
     {% if c.PREREG_DONATION_OPTS and c.PREREG_DONATION_OPTS|length > 1 or attendee.amount_extra or attendee.gets_any_kind_of_shirt %}
-        <script type="text/javascript">
+        <script>
             var donationChanged = function () {
                 setVisible('.affiliate-row', $.val('amount_extra') > 0);
                 {% if attendee.gets_any_kind_of_shirt %}
@@ -589,21 +589,21 @@
 
 {% include "regextra.html" %}
 
-<script type="text/javascript">
+<script>
     {% if not attendee.is_new and not attendee.amount_unpaid %}
         // This removes any badge levels lower than the attendee has purchased already
         if (window.BADGE_TYPES) {
-            while (_(BADGE_TYPES.options).size() && BADGE_TYPES.options[0].extra < {{ attendee.amount_extra }}) {
+            while (_(BADGE_TYPES.options).length && BADGE_TYPES.options[0].extra < {{ attendee.amount_extra }}) {
                 BADGE_TYPES.options.splice(0, 1);
             }
-            while (_(BADGE_TYPES.options).size() && BADGE_TYPES.options[0].price && BADGE_TYPES.options[0].price < {{ c.BADGE_TYPE_PRICES[attendee.badge_type]|default(c.BADGE_PRICE, boolean=True) }}) {
+            while (_(BADGE_TYPES.options).length && BADGE_TYPES.options[0].price && BADGE_TYPES.options[0].price < {{ c.BADGE_TYPE_PRICES[attendee.badge_type]|default(c.BADGE_PRICE, boolean=True) }}) {
                 BADGE_TYPES.options.splice(0, 1);
             }
         }
 
         // This is the same idea, except it disables the kick-in buttons and then hides them
         $(function () {
-            if($('input:radio[name=amount_extra]').size()) {
+            if($('input:radio[name=amount_extra]').length {
                 $('input:radio[name=amount_extra]').each( function() {
                     if (!isNaN($(this).val()) && Number($(this).val()) < {{ attendee.amount_extra }}) {
                         $(this).prop('disabled', true);

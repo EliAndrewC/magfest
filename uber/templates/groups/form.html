@@ -1,5 +1,5 @@
-{% extends "base.html" %}{% set admin_area=True %}
-{% block title %}Group Form{% endblock %}
+{% if not XHR %}{% extends 'base.html' %}{% set admin_area=True %}{% endif -%}
+{% import 'macros.html' as macros with context %} {{ macros.title('Group Form') }}
 {% block content %}
 
     {{ macros.nav_menu(
@@ -9,7 +9,7 @@
         "index", "Return to Group List", True
     ) }}
 
-<script type="text/javascript">
+<script>
     var unapprove = function(action, convert) {
         if (!$.val("email")) {
             $("#setstatus").prepend('<div style="color:red">You must enter an email message.</div>');
@@ -242,7 +242,7 @@
         </div>
     </div>
 
-    <script type="text/javascript">{% include "region_opts.html" %}</script>
+    <script>{% include "region_opts.html" %}</script>
     {{ macros.address_form(group) }}
 {% endif %}
 

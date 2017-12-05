@@ -1,5 +1,5 @@
-{% extends "base.html" %}{% set admin_area=True %}
-{% block title %}Shifts{% endblock %}
+{% if not XHR %}{% extends 'base.html' %}{% set admin_area=True %}{% endif -%}
+{% import 'macros.html' as macros with context %} {{ macros.title('Shifts') }}
 {% block page_styles %}
 <!--inside page_style -->
 <link rel="stylesheet" href="../static/styles/fullcalendar.min.css" />
@@ -72,9 +72,9 @@
 
 {% endblock %}
 {% block page_scripts %}
-<script type="text/javascript" src="../static/js/moment.js"></script>
-<script type="text/javascript" src="../static/js/fullcalendar.min.js"></script>
-<script type="text/javascript">
+<script src="../static/js/moment.js"></script>
+<script src="../static/js/fullcalendar.min.js"></script>
+<script>
 
 $(document).ready(function() {
     var eventList = new Array();

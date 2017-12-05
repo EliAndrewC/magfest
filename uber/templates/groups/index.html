@@ -1,8 +1,8 @@
-{% extends "base.html" %}{% set admin_area=True %}
-{% block title %}Group Admin{% endblock %}
+{% if not XHR %}{% extends 'base.html' %}{% set admin_area=True %}{% endif -%}
+{% import 'macros.html' as macros with context %} {{ macros.title('Group Admin') }}
 {% block content %}
 
-<script type="text/javascript">
+<script>
     function toggleDisplay(dropdown) {
         window.location = "index?order={{ order }}&show=" + $(dropdown).val();
     }

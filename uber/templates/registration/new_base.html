@@ -1,5 +1,5 @@
-{% extends "base.html" %}{% set admin_area=True %}
-{% block title %}Recent At-the-Door Registrations{% endblock %}
+{% if not XHR %}{% extends 'base.html' %}{% set admin_area=True %}{% endif -%}
+{% import 'macros.html' as macros with context %} {{ macros.title('Recent At-the-Door Registrations') }}
 {% block content %}
 {% block adminheader %}
 <link rel="stylesheet" type="text/css" href="../static/styles/styles.css" />
@@ -7,9 +7,9 @@
 {% if checked_in %}
     <a href="undo_new_checkin?id={{ checked_in }}">Undo</a>
 {% endif %}
-<script src="../static/js/servertimecheck.js" type="text/javascript"></script>
+<script src="../static/js/servertimecheck.js"></script>
 
-<script type="text/javascript">
+<script>
     {% if not c.DEV_BOX %}
         // automatically log out after 15 minutes of inactivity
         setTimeout(function () {

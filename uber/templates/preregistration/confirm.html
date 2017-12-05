@@ -1,9 +1,9 @@
 {% extends "./preregistration/preregbase.html" %}
-{% block title %}Confirm Your Details{% endblock %}
+{% import 'macros.html' as macros with context %} {{ macros.title('Confirm Your Details') }}
 {% block backlink %}{% endblock %}
 {% block content %}
 
-<script type="text/javascript">
+<script>
     $(function(){
         {% if attendee.has_personalized_badge %}
             $('.badge-row').show();
